@@ -45,6 +45,7 @@ class MainScene extends Phaser.Scene{
         // listener on resume event
         this.events.on('resume',function(){
             console.log("Game is resumed. Press [P] to pause.");
+            this.settings.show();
         },this);
     }
     // main game loop
