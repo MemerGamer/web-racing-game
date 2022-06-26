@@ -8,10 +8,63 @@ const SCREEN_H = 1080;
 const SCREEN_CX = SCREEN_W/2;
 const SCREEN_CY = SCREEN_H/2;
 
+// Game States
+const STATE_INIT = 1;
+const STATE_RESTART = 2;
+const STATE_PLAY = 3;
+const STATE_GAMEOVER = 4;
+
+// Current State
+let state = STATE_INIT;
+
 // Main Scene
 class MainScene extends Phaser.Scene{
     constructor(){
         super({key: 'SceneMain'});
+    }
+    // loads all assets
+    preload(){
+        this.load.image("imgBack","../assets/img_back.png");
+    }
+    // creates all objects
+    create(){
+        // backgrounds
+        this.sprBack = this.add.image(SCREEN_CX,SCREEN_CY,'imgBack');
+
+        // listener to pause game
+        this.input.keyboard.on('keydown-P', function(){
+            console.log("Game is paused. Press [P] to resume. ");
+            this.scene.pause();
+            this.scene.launch('ScenePause');
+        },this);
+
+        // listener on resume event
+        this.events.on('resume',function(){
+            console.log("Game is resumed. Press [P] to pause.");
+        },this);
+    }
+    // main game loop
+    update(time,delta){
+        switch(state){
+            case STATE_INIT:
+                console.log("Init game.");
+                state = STATE_RESTART;
+                break;
+
+            case STATE_RESTART:
+                console.log("Restart game.");
+                state = STATE_PLAY;
+                break;
+
+            case STATE_PLAY:
+                console.log("Playing game.");
+                state = STATE_GAMEOVER;
+                break;
+
+            case STATE_GAMEOVER:
+                console.log("Game over.");
+                break;
+        }
     }
 }
 
@@ -19,6 +72,14 @@ class MainScene extends Phaser.Scene{
 class PauseScene extends Phaser.Scene{
     constructor(){
         super({key: 'ScenePause'});
+    }
+    
+    create(){
+        // listener to resume game
+        this.input.keyboard.on('keydown-P', function(){
+            this.scene.resume('SceneMain');
+            this.scene.stop();
+        },this);
     }
 }
 
@@ -38,4 +99,4 @@ let config = {
 };
 
 // Game Instance
-let game = new Phaser.Game(config);
+let game = new Phaser.Game(config)
