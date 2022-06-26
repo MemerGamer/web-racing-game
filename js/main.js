@@ -31,9 +31,13 @@ class MainScene extends Phaser.Scene{
         // backgrounds
         this.sprBack = this.add.image(SCREEN_CX,SCREEN_CY,'imgBack');
 
+        // instances
+        this.settings = new Settings(this);
+
         // listener to pause game
         this.input.keyboard.on('keydown-P', function(){
             console.log("Game is paused. Press [P] to resume. ");
+            this.settings.txtPause.text = "[P] Resume";
             this.scene.pause();
             this.scene.launch('ScenePause');
         },this);
