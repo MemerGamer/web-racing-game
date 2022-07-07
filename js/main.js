@@ -14,6 +14,8 @@ const STATE_RESTART = 2;
 const STATE_PLAY = 3;
 const STATE_GAMEOVER = 4;
 
+const PLAYER = 0;
+
 // Current State
 let state = STATE_INIT;
 
@@ -25,14 +27,19 @@ class MainScene extends Phaser.Scene {
   // loads all assets
   preload() {
     this.load.image("imgBack", "../assets/img_back.png");
+    this.load.image("imgPlayer", "../assets/img_player.png");
   }
   // creates all objects
   create() {
     // backgrounds
     this.sprBack = this.add.image(SCREEN_CX, SCREEN_CY, "imgBack");
 
+    // array of sprites that will be drawn during rendering texture
+    this.sprites = [this.add.image(0, 0, "imgPlayer").setVisible(false)];
+
     // instances
     this.circuit = new Circuit(this);
+    this.player = new Player(this);
     this.camera = new Camera(this);
     this.settings = new Settings(this);
 
@@ -63,21 +70,24 @@ class MainScene extends Phaser.Scene {
     switch (state) {
       case STATE_INIT:
         this.camera.init();
-
+        this.player.init();
         state = STATE_RESTART;
         break;
 
       case STATE_RESTART:
         this.circuit.create();
+        this.player.restart();
 
         state = STATE_PLAY;
         break;
 
       case STATE_PLAY:
+        let dt = Math.min(1, delta / 1000);
+
+        this.player.update(dt);
         this.camera.update();
         this.circuit.render3D();
 
-        //state = STATE_GAMEOVER;
         break;
 
       case STATE_GAMEOVER:

@@ -14,6 +14,11 @@ class Camera {
     this.distToPlane = 1 / (this.y / this.distToPlayer);
   }
   update() {
-    this.z = -this.distToPlayer;
+    let player = this.scene.player;
+    let circuit = this.scene.circuit;
+
+    this.x = player.x * circuit.roadWidth;
+    this.z = player.z - this.distToPlayer;
+    if (this.z < 0) this.z += circuit.roadLength;
   }
 }
